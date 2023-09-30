@@ -1,0 +1,74 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net462</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NBuilder" Version="6.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="6.0.8" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
+    <PackageReference Include="Polly" Version="5.7.0" />
+    <PackageReference Include="Relativity.Server.Import.SDK" Version="2.9.2" />
+    <PackageReference Include="Relativity.Server.Kepler.Client.SDK" Version="2.15.6" />
+    <PackageReference Include="Relativity.Server.Logging.Interfaces.SDK" Version="3000.4.1" />
+    <PackageReference Include="Relativity.Server.OutsideIn.FI.Win32.SDK" Version="2023.4.0" />
+    <PackageReference Include="Relativity.Server.Productions.SDK" Version="12.3.0" />
+    <PackageReference Include="Relativity.Server.Services.DataContracts.SDK" Version="13.6.1" />
+    <PackageReference Include="Relativity.Server.Services.Interfaces.SDK" Version="13.6.1" />
+    <PackageReference Include="Relativity.Server.Transfer.SDK" Version="7.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Docs\EDRM-Sample1.pdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Docs\EDRM-Sample2.doc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Docs\EDRM-Sample3.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Docs\EDRM-Sample4.msg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Docs\EDRM-Sample7.ppt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="LogConfig.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Docs\EDRM-Sample10.wmf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Docs\EDRM-Sample5.htm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Docs\EDRM-Sample6.emf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Docs\EDRM-Sample8.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Docs\EDRM-Sample9.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\EDRM-Sample-000001.tif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\EDRM-Sample1.tif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\EDRM-Sample2.tif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Images\EDRM-Sample3.tif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+</Project>
