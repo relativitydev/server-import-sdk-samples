@@ -7,7 +7,7 @@ This repository demonstrates how the Relativity Server Import SDK can be used to
 * Objects
 * Productions
 
-All of the samples are based on [NUnit](https://nunit.org/), the [AAA](https://docs.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2017#write-your-tests) test structure pattern is followed, and app.config settings define test parameters including Relativity Urls and login credentials. Once these settings have been made, the tests are 100% responsible for all required setup and tear down procedures.
+All of the samples are based on [NUnit](https://nunit.org/), the [AAA](https://learn.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2022#write-your-test) test structure pattern is followed, and app.config settings define test parameters including Relativity Urls and login credentials. Once these settings have been made, the tests are 100% responsible for all required setup and tear down procedures.
 
 **Note:** the test project relies on [Relativity NuGet packages](https://www.nuget.org/packages?q=Relativity) to ensure Import API and all dependencies are deployed to the proper target directory.
 
@@ -30,7 +30,7 @@ This page contains the following information:
 ## Prerequisites
 
 * Visual Studio 2022 and above
-* A Server 2023 or above test environment
+* A Server 2023 or above developer Dev VM
 * Visual C++ 2015 x64 Runtime (Outside In and FreeImage)
 
 **Note:** Visual Studio 2022 and above is required due to NuGet 6 and C# language feature usage. Relativity strongly recommends [using a developer Dev VM](https://platform.relativity.com/Server2022/Content/Get_started/Lesson_1_-_Set_up_your_developer_environment.htm) for the test environment.
@@ -53,26 +53,16 @@ git clone -b server-release-2023 https://github.com/relativitydev/server-import-
 ```
 
 ## Step 3 - Open the solution
-Launch Visual Studio 2017 and open the Relativity.DataExchange.Samples.NUnit.sln solution file.
+Launch Visual Studio 2022 and open the Relativity.DataExchange.Samples.NUnit.sln solution file.
 
-## Step 4 - Update app settings
-Double-click the app.config file and update the following underneath the `appSettings` element:
+## Step 4 - Create the FunctionalTest.runsettings file
+Open a PowerShell terminal and run the following script to autogenerate the .\src\FunctionalTest.runsettings file.
 
-| Setting                  | Description                                                               | Example                                             |
-|--------------------------|---------------------------------------------------------------------------|-----------------------------------------------------|
-| RelativityUrl            | The Relativity instance URL.                                              | https://hostname.mycompany.corp                     |
-| RelativityRestUrl        | The Relativity Rest API URL.                                              | https://hostname.mycompany.corp/relativity.rest/api |
-| RelativityServicesUrl    | The Relativity Services API URL.                                          | https://hostname.mycompany.corp/relativity.services |
-| RelativityWebApiUrl      | The Relativity Web API URL.                                               | https://hostname.mycompany.corp/relativitywebapi    |
-| RelativityUserName       | The Relativity login user name.                                           | email@company.com                                   |
-| RelativityPassword       | The Relativity login password.                                            | SomePassword!                                       |
-| WorkspaceTemplate        | The workspace template used to create a test workspace for each test run. | Relativity Starter Template                         |
-| SqlDropWorkspaceDatabase | Specify whether to drop the SQL database when the test completes.         | True|False                                          |
-| SqlInstanceName          | The SQL instance where the workspace databases are stored.                | hostname.mycompany.corp\EDDSINSTANCE001             |
-| SqlAdminUserName         | The SQL system administrator user name.                                   | sa                                                  |
-| SqlAdminPassword         | The SQL system administrator password.                                    | SomePassword!                                       |
+```powershell
+.\New-TestSettings.ps1 -TestVMName <SPECIFY-DEVVM-NAME>
+```
 
-**Note:** The SQL parameters are optional and generally reserved to cleanup Dev VM's as soon as the tests are completed.
+Once the file is created, click Test &rarr; Configure Run Settings &rarr; Select Solution Wide runsettings File, and select the .\src\FunctionalTest.runsettings file.
 
 ## Step 5 - Build Solution
 Use Visual Studio to build the solution.
@@ -96,11 +86,11 @@ If everything is working properly, the Test Explorer should look something like 
 ## ImportAPI class
 The `ImportAPI` class is a top-level class that includes functionality for importing documents, images, production sets, and Relativity Dynamic Objects (RDOs). It includes methods for performing these import jobs, as well as other methods for retrieving workspace, field, and other objects.
 
-### Relativity Services
-The Import SDK design uses Relativity Services and proper URLs must be supplied when constructing the object.
+### Relativity Kepler REST Services
+The Import SDK design uses the Relativity Kepler REST Services and proper URLs must be supplied when constructing the object.
 
 * https://hostname.mycompany.corp (Relativity instance)
-* https://hostname.mycompany.corp/relativitywebapi (Relativity Web API)
+* https://hostname.mycompany.corp/relativitywebapi (Relativity web services)
 
 ### Authentication
 When constructing the `ImportAPI` object, the API caller must first decide which authentication model is used in order to determine how the object is constructed.
@@ -111,23 +101,23 @@ When constructing the `ImportAPI` object, the API caller must first decide which
 The user must be a member of the System Administrators group in Relativity. These permissions are similar to those required to import a load file through the Relativity Desktop Client.
 
 ```csharp
-ImportAPI importApi = new ImportAPI(relativityUserName, relativityPassword, relativityWebAPIUrl);
+ImportAPI importApi = new ImportAPI(relativityUserName, relativityPassword, relativityWebServiceUrl);
 ```
 
 #### Bearer token authentication
 Uses the current claims principal token to authenticate and should only be used by Relativity Service Account hosted processes.
 
 ```csharp
-ImportAPI importApi = ImportAPI.CreateByRsaBearerToken(relativityWebAPIUrl);
+ImportAPI importApi = ImportAPI.CreateByRsaBearerToken(relativityWebServiceUrl);
 ```
 
 **Note:** This is the preferred method for using Import API within an agent or custom page.
 
 #### Windows authentication
-The user is validated against the Relativity Web API instance located at WebServiceURL.
+The user is validated against the Relativity instance located at WebServiceURL.
 
 ```csharp
-ImportAPI importApi = new ImportAPI(relativityWebAPIUrl);
+ImportAPI importApi = new ImportAPI(relativityWebServiceUrl);
 ```
 
 ### Jobs

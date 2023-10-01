@@ -17,6 +17,8 @@
     <PackageReference Include="Relativity.Server.Productions.SDK" Version="12.3.0" />
     <PackageReference Include="Relativity.Server.Services.DataContracts.SDK" Version="13.6.1" />
     <PackageReference Include="Relativity.Server.Services.Interfaces.SDK" Version="13.6.1" />
+    <PackageReference Include="Relativity.Server.Testing.Framework.Api.SDK" Version="10.3.0" />
+    <PackageReference Include="Relativity.Server.Testing.Framework.SDK" Version="10.3.0" />
     <PackageReference Include="Relativity.Server.Transfer.SDK" Version="7.7.0" />
   </ItemGroup>
   <ItemGroup>

@@ -5,14 +5,10 @@
 // ----------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Reflection;
+
+using Relativity.Testing.Framework.Configuration;
 
 namespace Relativity.Server.Import.SDK.Samples.Helpers
 {
@@ -21,14 +17,6 @@ namespace Relativity.Server.Import.SDK.Samples.Helpers
 	/// </summary>
 	public static class FunctionalTestHelper
 	{
-		/// <summary>
-		/// Gets or sets a value indicating whether environment variables are enabled.
-		/// </summary>
-		/// <value>
-		/// <see langword="true" /> when environment variables are enabled; otherwise, <see langword="false" />.
-		/// </value>
-		public static bool EnvironmentVariablesEnabled { get; set; } = true;
-
 		/// <summary>
 		/// Gets the Relativity logging instance.
 		/// </summary>
@@ -47,28 +35,35 @@ namespace Relativity.Server.Import.SDK.Samples.Helpers
 		/// <returns>
 		/// The <see cref="FunctionalTestParameters"/> instance.
 		/// </returns>
-		public static FunctionalTestParameters Create()
+		public static FunctionalTestParameters Create(IConfigurationService configuration)
 		{
 			// Note: don't create the logger until all parameters have been retrieved.
-			FunctionalTestParameters parameters = ReadIntegrationTestParameters();
-			SetupLogger(parameters);
+			FunctionalTestParameters parameters = new FunctionalTestParameters
+				                                      {
+					                                      RelativityUserName =
+						                                      configuration.RelativityInstance.AdminUsername,
+					                                      RelativityPassword =
+						                                      configuration.RelativityInstance.AdminPassword,
+					                                      RelativityRestUrl =
+						                                      CreateUri(
+							                                      configuration,
+							                                      configuration.RelativityInstance
+							                                                   .RestServicesHostAddress,
+							                                      "relativity.rest/api"),
+					                                      RelativityWebServiceUrl =
+						                                      CreateUri(
+							                                      configuration,
+							                                      configuration.RelativityInstance
+							                                                   .RestServicesHostAddress,
+							                                      "RelativityWebApi"),
+					                                      RelativityUrl = CreateUri(
+						                                      configuration,
+						                                      configuration.RelativityInstance.RelativityHostAddress),
+				                                      };
+            SetupLogger(parameters);
 			SetupServerCertificateValidation(parameters);
 			Console.WriteLine("Creating a test workspace...");
 			WorkspaceHelper.CreateTestWorkspace(parameters, Logger);
-			kCura.Relativity.ImportAPI.ImportAPI iapi = new kCura.Relativity.ImportAPI.ImportAPI(
-				parameters.RelativityUserName,
-				parameters.RelativityPassword,
-				parameters.RelativityWebApiUrl.ToString());
-			IEnumerable<kCura.Relativity.ImportAPI.Data.Workspace> workspaces = iapi.Workspaces();
-			kCura.Relativity.ImportAPI.Data.Workspace workspace =
-				workspaces.FirstOrDefault(x => x.ArtifactID == parameters.WorkspaceId);
-			if (workspace == null)
-			{
-				throw new InvalidOperationException(
-					$"This operation cannot be performed because the workspace {parameters.WorkspaceId} that was just created doesn't exist.");
-			}
-
-			parameters.FileShareUncPath = workspace.DocumentPath;
 			Console.WriteLine($"Created {parameters.WorkspaceId} test workspace.");
 			return parameters;
 		}
@@ -87,99 +82,15 @@ namespace Relativity.Server.Import.SDK.Samples.Helpers
 			}
 
 			WorkspaceHelper.DeleteTestWorkspace(parameters, Logger);
-			string database = $"EDDS{parameters.WorkspaceId}";
-			if (parameters.SqlDropWorkspaceDatabase && parameters.WorkspaceId > 0)
-			{
-				try
-				{
-					SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder
-					{
-						DataSource = parameters.SqlInstanceName,
-						IntegratedSecurity = false,
-						UserID = parameters.SqlAdminUserName,
-						Password = parameters.SqlAdminPassword,
-						InitialCatalog = string.Empty,
-					};
-
-					SqlConnection.ClearAllPools();
-					using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
-					{
-						connection.Open();
-						using (SqlCommand command = connection.CreateCommand())
-						{
-							command.CommandText = $@"
-IF EXISTS(SELECT name FROM sys.databases WHERE name = '{database}')
-BEGIN
-	ALTER DATABASE [{database}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-	DROP DATABASE [{database}]
-END";
-							command.CommandType = CommandType.Text;
-							command.ExecuteNonQuery();
-							Logger.LogInformation("Successfully dropped the {DatabaseName} SQL workspace database.", database);
-							Console.WriteLine($"Successfully dropped the {database} SQL workspace database.");
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					Logger.LogError(e, "Failed to drop the {DatabaseName} SQL workspace database.", database);
-					Console.WriteLine($"Failed to drop the {database} SQL workspace database. Exception: " + e);
-				}
-			}
-			else
-			{
-				Logger.LogInformation("Skipped dropping the {DatabaseName} SQL workspace database.", database);
-			}
 		}
 
-		private static FunctionalTestParameters ReadIntegrationTestParameters()
+		private static Uri CreateUri(IConfigurationService configuration, string hostAddress, string relative = null)
 		{
-			FunctionalTestParameters parameters = new FunctionalTestParameters();
-			foreach (var prop in parameters.GetType().GetProperties())
-			{
-				FunctionalTestParameterAttribute attribute =
-					prop.GetCustomAttribute<FunctionalTestParameterAttribute>();
-				if (attribute == null || !attribute.IsMapped)
-				{
-					continue;
-				}
-
-				string value = GetConfigurationStringValue(prop.Name);
-				if (prop.PropertyType == typeof(string))
-				{
-					prop.SetValue(parameters, value);
-				}
-				else if (prop.PropertyType == typeof(bool))
-				{
-					prop.SetValue(parameters, bool.Parse(value));
-				}
-				else if (prop.PropertyType == typeof(Uri))
-				{
-					prop.SetValue(parameters, new Uri(value));
-				}
-				else
-				{
-					string message =
-						$"The integration test parameter '{prop.Name}' of type '{prop.PropertyType}' isn't supported by the integration test helper.";
-					throw new ConfigurationErrorsException(message);
-				}
-			}
-
-			return parameters;
+			System.Uri hosAddressUri = new System.Uri($"{configuration.RelativityInstance.ServerBindingType}://{hostAddress}");
+			return string.IsNullOrEmpty(relative) ? hosAddressUri : new System.Uri(hosAddressUri, relative);
 		}
 
-		private static string GetConfigurationStringValue(string key)
-		{
-			string value = System.Configuration.ConfigurationManager.AppSettings.Get(key);
-			if (!string.IsNullOrEmpty(value))
-			{
-				return value;
-			}
-
-			throw new InvalidOperationException($"The '{key}' app.config setting value is not specified.");
-		}
-
-		private static void SetupServerCertificateValidation(FunctionalTestParameters parameters)
+        private static void SetupServerCertificateValidation(FunctionalTestParameters parameters)
 		{
 			if (!parameters.ServerCertificateValidation)
 			{
@@ -191,12 +102,16 @@ END";
 		private static void SetupLogger(FunctionalTestParameters parameters)
 		{
 			Relativity.Logging.LoggerOptions loggerOptions = new Relativity.Logging.LoggerOptions
-			{
-				Application = "8A1A6418-29B3-4067-8C9E-51E296F959DE",
-				ConfigurationFileLocation = Path.Combine(ResourceFileHelper.GetBasePath(), "LogConfig.xml"),
-				System = "Import-API",
-				SubSystem = "Samples",
-			};
+				                                                 {
+					                                                 Application =
+						                                                 "8A1A6418-29B3-4067-8C9E-51E296F959DE",
+					                                                 ConfigurationFileLocation =
+						                                                 Path.Combine(
+							                                                 ResourceFileHelper.GetBasePath(),
+							                                                 "LogConfig.xml"),
+					                                                 System = "Import-API",
+					                                                 SubSystem = "Samples",
+				                                                 };
 
 			// Configure the optional SEQ sink to periodically send logs to the local SEQ server for improved debugging.
 			// See https://getseq.net/ for more details.

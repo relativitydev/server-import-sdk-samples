@@ -760,7 +760,7 @@ namespace Relativity.Server.Import.SDK.Samples.Tests
 			return new kCura.Relativity.ImportAPI.ImportAPI(
 				this.TestParameters.RelativityUserName,
 				this.TestParameters.RelativityPassword,
-				this.TestParameters.RelativityWebApiUrl.ToString());
+				this.TestParameters.RelativityWebServiceUrl.ToString());
 		}
 
 		protected void CreateSingleObjectField(int workspaceObjectTypeId, int descriptorArtifactTypeId, string fieldName)

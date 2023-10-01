@@ -10,6 +10,10 @@ using Relativity.Server.Import.SDK.Samples.Helpers;
 
 namespace Relativity.Server.Import.SDK.Samples
 {
+	using Microsoft.Extensions.Configuration;
+
+	using Relativity.Testing.Framework.Configuration;
+
 	/// <summary>
 	/// Represents a global assembly-wide setup routine that's guaranteed to be executed before ANY NUnit test.
 	/// </summary>
@@ -34,8 +38,16 @@ namespace Relativity.Server.Import.SDK.Samples
 		[OneTimeSetUp]
 		public void Setup()
 		{
-			TestParameters = FunctionalTestHelper.Create();
-		}
+			IConfigurationRoot configurationRoot = new ConfigurationBuilder().AddNUnitParameters()
+			                                                                 .AddEnvironmentVariables()
+			                                                                 .Build();
+			Relativity.Testing.Framework.RelativityFacade.Instance.RelyOn(
+				new Relativity.Testing.Framework.CoreComponent { ConfigurationRoot = configurationRoot });
+			Relativity.Testing.Framework.RelativityFacade.Instance
+			          .RelyOn<Relativity.Testing.Framework.Api.ApiComponent>();
+			TestParameters = FunctionalTestHelper.Create(Relativity.Testing.Framework.RelativityFacade.Instance.Config);
+			TestContext.Progress.WriteLine("OneTimeSetUp: completed.");
+        }
 
 		/// <summary>
 		/// The main teardown method.

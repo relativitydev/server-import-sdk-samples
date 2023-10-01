@@ -28,8 +28,6 @@ namespace Relativity.Server.Import.SDK.Samples.Helpers
 			logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
 			int templateWorkspaceId = RetrieveWorkspaceId(parameters, logger, parameters.WorkspaceTemplate);
-
-			// pasted:
 			using (IWorkspaceManager workspaceManager = ServiceHelper.GetServiceProxy<IWorkspaceManager>(parameters))
 			{
 				WorkspaceResponse readResponse = workspaceManager.ReadAsync(templateWorkspaceId).GetAwaiter().GetResult();
@@ -45,31 +43,6 @@ namespace Relativity.Server.Import.SDK.Samples.Helpers
 				WorkspaceResponse createResponse = workspaceManager.CreateAsync(createRequest).GetAwaiter().GetResult();
 				logger.LogInformation("Completed the create workspace process.");
 				parameters.WorkspaceId = createResponse.ArtifactID;
-			}
-		}
-
-
-		private static int RetrieveWorkspaceId(FunctionalTestParameters parameters, Relativity.Logging.ILog logger, string workspaceName)
-		{
-			logger.LogInformation("Retrieving the {workspaceName} workspace...", workspaceName);
-			var queryRequest = new QueryRequest { Condition = $"'Name' == '{workspaceName}'" };
-
-			QueryResultSlim queryResponse;
-			using (IWorkspaceManager workspaceManager = ServiceHelper.GetServiceProxy<IWorkspaceManager>(parameters))
-			{
-				queryResponse = workspaceManager.QueryEligibleTemplatesAsync(queryRequest, 0, 2).GetAwaiter().GetResult();
-			}
-
-			switch (queryResponse.Objects.Count)
-			{
-				case 0:
-					throw new InvalidOperationException($"Workspace with the following name does not exist: {workspaceName}");
-				case 1:
-					int workspaceId = queryResponse.Objects[0].ArtifactID;
-					logger.LogInformation($"Retrieved the {workspaceName} workspace. workspaceId={workspaceId}.", workspaceName, workspaceId);
-					return workspaceId;
-				default:
-					throw new InvalidOperationException($"More then one Workspace with the following name exists: {workspaceName}");
 			}
 		}
 
@@ -108,6 +81,30 @@ namespace Relativity.Server.Import.SDK.Samples.Helpers
 					folders.Count,
 					parameters.WorkspaceId);
 				return folders;
+			}
+		}
+
+		private static int RetrieveWorkspaceId(FunctionalTestParameters parameters, Relativity.Logging.ILog logger, string workspaceName)
+		{
+			logger.LogInformation("Retrieving the {workspaceName} workspace...", workspaceName);
+			var queryRequest = new QueryRequest { Condition = $"'Name' == '{workspaceName}'" };
+
+			QueryResultSlim queryResponse;
+			using (IWorkspaceManager workspaceManager = ServiceHelper.GetServiceProxy<IWorkspaceManager>(parameters))
+			{
+				queryResponse = workspaceManager.QueryEligibleTemplatesAsync(queryRequest, 0, 2).GetAwaiter().GetResult();
+			}
+
+			switch (queryResponse.Objects.Count)
+			{
+				case 0:
+					throw new InvalidOperationException($"Workspace with the following name does not exist: {workspaceName}");
+				case 1:
+					int workspaceId = queryResponse.Objects[0].ArtifactID;
+					logger.LogInformation($"Retrieved the {workspaceName} workspace. workspaceId={workspaceId}.", workspaceName, workspaceId);
+					return workspaceId;
+				default:
+					throw new InvalidOperationException($"More then one Workspace with the following name exists: {workspaceName}");
 			}
 		}
 	}

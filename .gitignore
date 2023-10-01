@@ -255,3 +255,4 @@ paket-files/
 
 # Outside In nuget package
 **/oi/
+/src/FunctionalTest.runsettings
