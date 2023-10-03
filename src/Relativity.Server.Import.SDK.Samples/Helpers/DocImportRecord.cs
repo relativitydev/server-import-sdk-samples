@@ -4,7 +4,7 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-namespace Relativity.Server.Import.SDK.Samples.Tests
+namespace Relativity.Server.Import.SDK.Samples.Helpers
 {
 	/// <summary>
 	/// Represents a single document import record.

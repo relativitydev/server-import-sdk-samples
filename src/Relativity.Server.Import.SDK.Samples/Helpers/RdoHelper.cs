@@ -22,42 +22,64 @@ namespace Relativity.Server.Import.SDK.Samples.Helpers
 	/// </summary>
 	public static class RdoHelper
 	{
-		private const int WORKSPACE_ARTIFACT_TYPE_ID = 8;
-
 		public static int CreateObjectType(FunctionalTestParameters parameters, string objectTypeName)
 		{
 			using (var objectManager = ServiceHelper.GetServiceProxy<IObjectManager>(parameters))
 			{
 				QueryRequest queryObjectTypeRequest = new QueryRequest
-				{
-					ObjectType = new ObjectTypeRef { Name = "Object Type" },
-					Fields = new[] { new FieldRef { Name = "Artifact Type ID" } },
-					Condition = $"'Name' == '{objectTypeName}'",
-				};
-				Services.Objects.DataContracts.QueryResult result = objectManager.QueryAsync(parameters.WorkspaceId, queryObjectTypeRequest, 0, 1).GetAwaiter().GetResult();
+					                                      {
+						                                      ObjectType = new ObjectTypeRef { Name = "Object Type" },
+						                                      Fields = new[]
+							                                               {
+								                                               new FieldRef
+									                                               {
+										                                               Name = "Artifact Type ID"
+									                                               }
+							                                               },
+						                                      Condition = $"'Name' == '{objectTypeName}'",
+					                                      };
+				Services.Objects.DataContracts.QueryResult result = objectManager
+				                                                    .QueryAsync(
+					                                                    parameters.WorkspaceId,
+					                                                    queryObjectTypeRequest,
+					                                                    0,
+					                                                    1)
+				                                                    .GetAwaiter()
+				                                                    .GetResult();
 
 				if (result.TotalCount > 0)
 				{
-					return (int)result.Objects.Single().FieldValues.Single().Value;
+					return (int)result.Objects.Single()
+					                  .FieldValues.Single()
+					                  .Value;
 				}
 			}
 
 			using (var objectTypeManager = ServiceHelper.GetServiceProxy<IObjectTypeManager>(parameters))
 			{
 				var request = new ObjectTypeRequest
-				{
-					Name = objectTypeName,
-					ParentObjectType = new Securable<ObjectTypeIdentifier>(new ObjectTypeIdentifier { ArtifactTypeID = WORKSPACE_ARTIFACT_TYPE_ID }),
-					EnableSnapshotAuditingOnDelete = true,
-					PivotEnabled = true,
-					CopyInstancesOnCaseCreation = false,
-					SamplingEnabled = true,
-					PersistentListsEnabled = false,
-					CopyInstancesOnParentCopy = false,
-				};
+					              {
+						              Name = objectTypeName,
+						              ParentObjectType =
+							              new Securable<ObjectTypeIdentifier>(
+								              new ObjectTypeIdentifier
+									              {
+										              ArtifactTypeID = WellKnownArtifactTypes.WorkspaceArtifactTypeId
+									              }),
+						              EnableSnapshotAuditingOnDelete = true,
+						              PivotEnabled = true,
+						              CopyInstancesOnCaseCreation = false,
+						              SamplingEnabled = true,
+						              PersistentListsEnabled = false,
+						              CopyInstancesOnParentCopy = false,
+					              };
 
-				int artifactId = objectTypeManager.CreateAsync(parameters.WorkspaceId, request).GetAwaiter().GetResult();
-				ObjectTypeResponse objectTypeResponse = objectTypeManager.ReadAsync(parameters.WorkspaceId, artifactId).GetAwaiter().GetResult();
+				int artifactId = objectTypeManager.CreateAsync(parameters.WorkspaceId, request)
+				                                  .GetAwaiter()
+				                                  .GetResult();
+				ObjectTypeResponse objectTypeResponse = objectTypeManager.ReadAsync(parameters.WorkspaceId, artifactId)
+				                                                         .GetAwaiter()
+				                                                         .GetResult();
 				return objectTypeResponse.ArtifactTypeID;
 			}
 		}

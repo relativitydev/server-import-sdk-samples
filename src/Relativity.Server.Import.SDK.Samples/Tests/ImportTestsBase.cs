@@ -11,9 +11,9 @@ using System.Data;
 using System.Linq;
 using System.Net;
 
-using NUnit.Framework;
-
 using kCura.WinEDDS.Service;
+
+using NUnit.Framework;
 
 using Relativity.Server.Import.SDK.Samples.Helpers;
 using Relativity.Services.Interfaces.Field.Models;

@@ -4,18 +4,17 @@
 // </copyright>
 // ----------------------------------------------------------------------------
 
-using global::NUnit.Framework;
+using Microsoft.Extensions.Configuration;
+
+using NUnit.Framework;
 
 using Relativity.Server.Import.SDK.Samples.Helpers;
+using Relativity.Testing.Framework.Configuration;
 
 namespace Relativity.Server.Import.SDK.Samples
 {
-	using Microsoft.Extensions.Configuration;
-
-	using Relativity.Testing.Framework.Configuration;
-
 	/// <summary>
-	/// Represents a global assembly-wide setup routine that's guaranteed to be executed before ANY NUnit test.
+	/// Represents a global setup that's guaranteed to be executed before ANY NUnit test and after all have been completed.
 	/// </summary>
 	[SetUpFixture]
 	public class OneTimeSetup

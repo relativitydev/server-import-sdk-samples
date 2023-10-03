@@ -25,5 +25,10 @@ namespace Relativity.Server.Import.SDK.Samples.Helpers
 		/// The Field artifact type identifier constant.
 		/// </summary>
 		public const int FieldArtifactTypeId = 14;
+
+		/// <summary>
+		/// The Workspace artifact type identifier constant.
+		/// </summary>
+        public const int WorkspaceArtifactTypeId = 8;
     }
 }
