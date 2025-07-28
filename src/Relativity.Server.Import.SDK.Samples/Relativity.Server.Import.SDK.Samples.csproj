@@ -19,6 +19,7 @@
     <PackageReference Include="Relativity.Server.Testing.Framework.Api.SDK" Version="10.3.0" />
     <PackageReference Include="Relativity.Server.Testing.Framework.SDK" Version="10.3.0" />
     <PackageReference Include="Relativity.Server.Transfer.SDK" Version="7.7.0" />
+    <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Docs\EDRM-Sample1.pdf">
