@@ -10,15 +10,16 @@
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
     <PackageReference Include="Polly" Version="5.7.0" />
-    <PackageReference Include="Relativity.Server.Import.SDK" Version="24000.1.0" />
-    <PackageReference Include="Relativity.Server.Kepler.Client.SDK" Version="5000.0.2" />
-    <PackageReference Include="Relativity.Server.OutsideIn.FI.Win32.SDK" Version="2024.11.0" />
+    <PackageReference Include="Relativity.Server.Import.SDK" Version="25000.0.16-pre.13" />
+    <PackageReference Include="Relativity.Server.Kepler.Client.SDK" Version="5000.1.4" />
+    <PackageReference Include="Relativity.Server.OutsideIn.FI.Win32.SDK" Version="2025.8.0" /> 
     <PackageReference Include="Relativity.Server.Productions.SDK" Version="24000.0.0" />
-    <PackageReference Include="Relativity.Server.Services.DataContracts.SDK" Version="5000.0.2" />
-    <PackageReference Include="Relativity.Server.Services.Interfaces.SDK" Version="5000.0.2" />
+    <PackageReference Include="Relativity.Server.Services.DataContracts.SDK" Version="5001.1.0" />
+    <PackageReference Include="Relativity.Server.Services.Interfaces.SDK" Version="5001.1.0" />
     <PackageReference Include="Relativity.Server.Testing.Framework.Api.SDK" Version="5000.1.0" />
     <PackageReference Include="Relativity.Server.Testing.Framework.SDK" Version="5000.1.0" />
-    <PackageReference Include="Relativity.Server.Transfer.SDK" Version="24000.0.1" />
+    <PackageReference Include="Relativity.Server.Transfer.SDK" Version="25000.0.6" />
+    <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Docs\EDRM-Sample1.pdf">
