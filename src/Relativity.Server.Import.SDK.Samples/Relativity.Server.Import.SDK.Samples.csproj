@@ -7,18 +7,20 @@
   <ItemGroup>
     <PackageReference Include="NBuilder" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="6.0.8" />
-    <PackageReference Include="NUnit" Version="3.13.3" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
+    <PackageReference Include="NUnit" Version="4.2.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.0.1" />
     <PackageReference Include="Polly" Version="5.7.0" />
-    <PackageReference Include="Relativity.Server.Import.SDK" Version="25000.0.16-pre.13" />
+    <PackageReference Include="Relativity.Server.Import.SDK" Version="25000.0.19" />
     <PackageReference Include="Relativity.Server.Kepler.Client.SDK" Version="5000.1.4" />
     <PackageReference Include="Relativity.Server.OutsideIn.FI.Win32.SDK" Version="2025.8.0" /> 
-    <PackageReference Include="Relativity.Server.Productions.SDK" Version="24000.0.0" />
+    <PackageReference Include="Relativity.Server.Productions.SDK" Version="25000.0.1" />
     <PackageReference Include="Relativity.Server.Services.DataContracts.SDK" Version="5001.1.0" />
     <PackageReference Include="Relativity.Server.Services.Interfaces.SDK" Version="5001.1.0" />
-    <PackageReference Include="Relativity.Server.Testing.Framework.Api.SDK" Version="5000.1.0" />
-    <PackageReference Include="Relativity.Server.Testing.Framework.SDK" Version="5000.1.0" />
+    <PackageReference Include="Relativity.Server.Testing.Framework.Api.SDK" Version="5001.0.38" />
+    <PackageReference Include="Relativity.Server.Testing.Framework.SDK" Version="5001.0.38" />
     <PackageReference Include="Relativity.Server.Transfer.SDK" Version="25000.0.6" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup>
